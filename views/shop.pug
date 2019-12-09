@@ -1,0 +1,22 @@
+extends layouts/main-layout.pug
+
+block styles 
+    link(rel="stylesheet" href="/css/product.css")
+    
+block content
+    main
+        .grid
+            if !products.length
+                h1 No Products.
+            else
+                each product in products
+                    article.card.product-item
+                        header.card__header
+                            h1.product__title #{product.title}
+                        .card__image
+                            img(src="#{product.image}", alt="#{product.alt}")
+                        .card__content
+                            h2.product__price #{product.price}
+                            p.product__description #{product.description}
+                        .card__actions
+                            button.btn Add to Cart
