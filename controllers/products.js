@@ -6,6 +6,12 @@ exports.GetAddProduct = (req, res, next) => {
     path: "/admin/add-product"
   });
 };
+
+exports.PostAddProduct = (req, res, next) => {
+  products.push({ title: req.body.title });
+  res.redirect("/");
+};
+
 exports.GetProducts = (req, res, next) => {
   res.render("shop", {
     products: products,
