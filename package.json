@@ -7,9 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
     "start-server": "node app.js",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "release": "npx semantic-release"
   },
-  "author": "Maximilian Schwarzmüller",
+  "author": "Luis Carvajal",
   "license": "ISC",
   "devDependencies": {
     "commitizen": "^4.0.3",
@@ -26,5 +27,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "release": {
+    "branch": "master"
   }
 }
