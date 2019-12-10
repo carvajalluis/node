@@ -9,8 +9,8 @@ const p = path.join(
 
 const getProductsFile = callback => {
   fs.readFile(p, (err, content) => {
-    console.log(content);
     if (!err) {
+      console.log(err);
       return callback(JSON.parse(content));
     }
     return callback([]);
@@ -23,9 +23,7 @@ module.exports = class Product {
 
   save() {
     getProductsFile(products => {
-      console.log(products);
       products = [...products, this];
-      console.log(products);
       fs.writeFile(p, JSON.stringify(products), err => {
         console.log(err);
       });
