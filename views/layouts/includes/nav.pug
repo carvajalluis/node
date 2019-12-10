@@ -2,12 +2,12 @@ header.main-header
     nav.main-header__nav
         ul.main-header__item-list
             li.main-header__item
-                a(href="/", class=(path === "/" ? "active": "")) Shop
+                a(href="/shop/", class=(path === "/" ? "active": "")) Shop
             li.main-header__item
-                a(href="/products", class=(path === "/products" ? "active": "")) Products
+                a(href="/shop/product-list", class=(path === "/shop/product-list" ? "active": "")) Products
             li.main-header__item
-                a(href="/cart", class=(path === "/cart" ? "active": "")) Cart
+                a(href="/shop/cart", class=(path === "/shop/cart" ? "active": "")) Cart
             li.main-header__item
                 a(href="/admin/add-product", class=(path === "/admin/add-product" ? "active": "")) Add Product
             li.main-header__item
-                a(href="/admin/product-list", class=(path === "/admin/product-list" ? "active": "")) Product List
+                a(href="/admin/product-list", class=(path === "/admin/product-list" ? "active": "")) Admin Products
