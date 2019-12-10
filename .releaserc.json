@@ -1,0 +1,20 @@
+{
+  "extends": "@semantic-release/gitlab-config",
+  "release": {
+    "branch": "master"
+  },
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/gitlab",
+      {
+        "gitlabUrl": "https://gitlab.com",
+        "assets": [
+          { "path": "dist/*.**.css", "label": "CSS distribution" },
+          { "path": "dist/*.**.js", "label": "JS distribution" }
+        ]
+      }
+    ]
+  ]
+}
