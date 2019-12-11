@@ -7,34 +7,64 @@ const p = path.join(
   "products.json"
 );
 
-const getProductsFile = callback => {
-  fs.readFile(p, (err, content) => {
-    if (!err) {
-      console.log(err);
-      return callback(JSON.parse(content));
-    }
-    return callback([]);
-  });
-};
 module.exports = class Product {
-  constructor(title, imgUrl, description, price) {
+  constructor(id, title, imgUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imgUrl = imgUrl;
     this.description = description;
     this.price = price;
   }
 
+  static saveProductFile(products) {
+    fs.writeFile(p, JSON.stringify(products), err => {
+      console.log(err);
+    });
+  }
+
+  static getProductsFile = callback => {
+    fs.readFile(p, (err, content) => {
+      if (!err) {
+        return callback(JSON.parse(content));
+      }
+      console.log(err);
+      return callback([]);
+    });
+  };
+
   save() {
-    this.id = Math.random().toString();
-    getProductsFile(products => {
-      products = [...products, this];
-      fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err);
-      });
+    this.getProductsFile(products => {
+      if (this.id) {
+        const existingProductIndex = products.findIndex(p => p.id === this.id);
+        products = [
+          ...products.slice(0, existingProductIndex),
+          this,
+          ...products.slice(existingProductIndex + 1)
+        ];
+      } else {
+        this.id = Math.floor(Math.random() * (999 - 100 + 1) + 100).toString();
+        products = [...products, this];
+      }
+      this.saveProductFile(products);
+    });
+  }
+
+  static deleteById(id) {
+    this.getProductsFile(products => {
+      const existingProduct = products.filter(p => p.id != id);
+      products = [...existingProduct];
+      this.saveProductFile(products);
     });
   }
 
   static fetchAll(callback) {
-    getProductsFile(callback);
+    this.getProductsFile(callback);
+  }
+
+  static findById(id, callback) {
+    this.getProductsFile(products => {
+      const product = products.find(p => p.id === id);
+      callback(product);
+    });
   }
 };
