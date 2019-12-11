@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", shopCtrl.GetIndex);
 
-router.get("/product-list", shopCtrl.GetProducts);
+router.get("/products", shopCtrl.GetProducts);
 
 router.get("/cart", shopCtrl.GetCart);
 
