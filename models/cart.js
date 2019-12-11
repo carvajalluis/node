@@ -27,7 +27,7 @@ module.exports = class Cart {
 
   static addProduct(id, price) {
     // fetch previous cart
-    this.getCartFile(cart => {
+    Cart.getCartFile(cart => {
       // find existing product
       const includdedProductIndex = cart.products.findIndex(p => p.id === id);
       const includdedProduct = cart.products[includdedProductIndex];
@@ -47,22 +47,22 @@ module.exports = class Cart {
       }
       // update cart price
       cart.totalPrice = cart.totalPrice + +price;
-      this.saveCartFile(cart);
+      Cart.saveCartFile(cart);
     });
   }
 
   static deleteProduct(id, price) {
-    this.getCartFile(cart => {
+    Cart.getCartFile(cart => {
       if (!cart.products) {
         return;
       }
-      const productQty = cart.products.filter(p => p.id === id).qty;
+      const { qty } = cart.products.find(p => p.id === id);
       const remainingProducts = cart.products.filter(p => p.id != id);
       cart = {
         products: [...remainingProducts],
-        totalPrice: cart.totalPrice - +price * +productQty
+        totalPrice: cart.totalPrice - +price * +qty
       };
-      this.saveCartFile(cart);
+      Cart.saveCartFile(cart);
     });
   }
 };

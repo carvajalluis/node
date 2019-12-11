@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const Cart = require("../models/cart");
+
 const p = path.join(
   path.dirname(process.mainModule.filename),
   "data",
@@ -33,7 +35,7 @@ module.exports = class Product {
   };
 
   save() {
-    this.getProductsFile(products => {
+    Product.getProductsFile(products => {
       if (this.id) {
         const existingProductIndex = products.findIndex(p => p.id === this.id);
         products = [
@@ -45,15 +47,19 @@ module.exports = class Product {
         this.id = Math.floor(Math.random() * (999 - 100 + 1) + 100).toString();
         products = [...products, this];
       }
-      this.saveProductFile(products);
+      Product.saveProductFile(products);
     });
   }
 
   static deleteById(id) {
     this.getProductsFile(products => {
+      const deletingProduct = products.find(p => p.id != id);
       const existingProduct = products.filter(p => p.id != id);
+
       products = [...existingProduct];
-      this.saveProductFile(products);
+      Product.saveProductFile(products);
+      
+      Cart.deleteProduct(id, deletingProduct.price);
     });
   }
 
