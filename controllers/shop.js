@@ -29,3 +29,14 @@ exports.GetCart = (req, res, next) => {
     });
   });
 }
+
+exports.GetOrders = (req, res, next) => {
+  const products = Product.fetchAll(products => {
+    res.render("shop/orders", {
+      products: products,
+      title: "Your Orders",
+      path: "/orders"
+    });
+  });
+}
+

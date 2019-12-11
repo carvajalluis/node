@@ -11,6 +11,8 @@ router.get("/products", shopCtrl.GetProducts);
 
 router.get("/cart", shopCtrl.GetCart);
 
+router.get("/orders", shopCtrl.GetOrders);
+
 router.get("/checkout");
 
 module.exports = router;
