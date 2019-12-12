@@ -65,4 +65,8 @@ module.exports = class Cart {
       Cart.saveCartFile(cart);
     });
   }
+
+  static fetchAll(callback) {
+    this.getCartFile(callback);
+  }
 };

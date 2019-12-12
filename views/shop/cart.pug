@@ -1,4 +1,10 @@
 extends ../layouts/main-layout.pug
 
 block content
-    h1 Nothing there yet!
+    main
+        each item in cartProducts
+            h2 #{item.product.title}
+            img(src=item.product.imgUrl, alt=item.product.title style='width:100px;height:100px;')
+            h3 #{item.product.price} per unit
+            p Qty: #{item.qty}
+            h3 Subtotal: #{item.product.price * item.qty}
