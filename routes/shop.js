@@ -15,6 +15,8 @@ router.get("/cart", shopCtrl.GetCart);
 
 router.post("/add-to-cart", shopCtrl.PostAddToCart);
 
+router.post("/delete-cart-item", shopCtrl.PostDeleteCartItem);
+
 router.get("/orders", shopCtrl.GetOrders);
 
 router.get("/checkout");

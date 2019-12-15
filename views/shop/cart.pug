@@ -2,9 +2,17 @@ extends ../layouts/main-layout.pug
 
 block content
     main
-        each item in cartProducts
-            h2 #{item.product.title}
-            img(src=item.product.imgUrl, alt=item.product.title style='width:100px;height:100px;')
-            h3 #{item.product.price} per unit
-            p Qty: #{item.qty}
-            h3 Subtotal: #{item.product.price * item.qty}
+        if products.length
+            ul
+                each item in products 
+                    li
+                        img(src=item.product.imgUrl, alt=item.product.title style='width:100px;height:100px;')
+                        p #{item.product.title}. Qty: #{item.qty}. Price #{item.product.price}$
+                        p Subtotal: #{item.product.price * item.qty}
+                        form(action="/shop/delete-cart-item", method="post")
+                            input(type="hidden", name="id" value=item.product.id)
+                            input(type="hidden", name="price" value=item.product.price)
+                            button.btn(type="submit") Delete
+                    
+        else
+            h1 No items in the cart!

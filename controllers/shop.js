@@ -42,13 +42,13 @@ exports.GetCart = (req, res, next) => {
             ? cart.products.find(x => x.id === cp.id).qty
             : 0
         }))
-        .filter(p => p.qty > 1);
+        .filter(p => p.qty > 0);
 
       res.render("shop/cart", {
         products: products,
         title: "Cart",
         path: "/cart",
-        cartProducts: cartProducts
+        products: cartProducts
       });
     });
   });
@@ -60,6 +60,12 @@ exports.PostAddToCart = (req, res, next) => {
     Cart.addProduct(id, product.price);
   });
   res.redirect("/shop/products");
+};
+
+exports.PostDeleteCartItem = (req, res, next) => {
+  let { id, price } = req.body;
+  Cart.deleteProduct(id, price);
+  res.redirect("/shop/cart");
 };
 
 exports.GetOrders = (req, res, next) => {
