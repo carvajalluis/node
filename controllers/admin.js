@@ -51,7 +51,6 @@ exports.PostAddProduct = async (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch(err => console.log(err));
-  res.redirect("/admin/products");
 };
 
 exports.PostEditProduct = async (req, res, next) => {
@@ -61,7 +60,7 @@ exports.PostEditProduct = async (req, res, next) => {
     .then(product => {
       product.title = title;
       product.imageUrl = imageUrl;
-      product.description = descricption;
+      product.description = description;
       product.price = price;
 
       return product.save();
