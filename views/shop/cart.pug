@@ -1,18 +1,21 @@
 extends ../layouts/main-layout.pug
 
+block styles 
+    link(rel="stylesheet" href="/css/cart.css")
+
 block content
     main
         if products.length
-            ul
+            ul.cart__item-list
                 each item in products 
-                    li
-                        img(src=item.product.imageUrl, alt=item.product.title style='width:100px;height:100px;')
-                        p #{item.product.title}. Qty: #{item.qty}. Price #{item.product.price}$
-                        p Subtotal: #{item.product.price * item.qty}
-                        form(action="/shop/delete-cart-item", method="post")
-                            input(type="hidden", name="id" value=item.product.id)
-                            input(type="hidden", name="price" value=item.product.price)
-                            button.btn(type="submit") Delete
-                    
+                    li.cart__item
+                        img(src=item.imageUrl, alt=item.title style='width:100px;height:100px;')
+                        p #{item.title}. Qty: #{item.CartItem.quantity}. Price #{item.price}$
+                        p Subtotal: #{item.price * item.CartItem.quantity}$
+                        form(action="/shop/delete-cart-item" method="post")
+                            input(type="hidden" name="id" value=item.id)
+                            input(type="hidden" name="price" value=item.price)
+                            button.btn.danger(type="submit") Delete
+
         else
             h1 No items in the cart!
