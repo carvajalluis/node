@@ -16,6 +16,7 @@
     "@semantic-release/gitlab-config": "^6.0.1",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "3.0.2",
+    "faker": "^4.1.0",
     "nodemon": "^1.18.3",
     "semantic-release": "^15.13.31"
   },
