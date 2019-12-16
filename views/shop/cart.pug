@@ -6,7 +6,7 @@ block content
             ul
                 each item in products 
                     li
-                        img(src=item.product.imgUrl, alt=item.product.title style='width:100px;height:100px;')
+                        img(src=item.product.imageUrl, alt=item.product.title style='width:100px;height:100px;')
                         p #{item.product.title}. Qty: #{item.qty}. Price #{item.product.price}$
                         p Subtotal: #{item.product.price * item.qty}
                         form(action="/shop/delete-cart-item", method="post")

@@ -1,6 +1,4 @@
 const express = require("express");
-const adminCtrl = require("../controllers/admin");
-
 const shopCtrl = require("../controllers/shop");
 
 const router = express.Router();

@@ -1,40 +1,45 @@
-const Product = require("../models/product");
-const Cart = require("../models/cart");
+const { Product } = require("../models");
 
-exports.GetProducts = (req, res, next) => {
-  const products = Product.fetchAll(products => {
-    res.render("shop/products", {
-      products: products,
-      title: "Shop",
-      path: "/products"
-    });
-  });
+exports.GetProducts = async (req, res, next) => {
+  const products = await Product.findAll()
+    .then(products => {
+      res.render("shop/products", {
+        products: products,
+        title: "Shop",
+        path: "/products"
+      });
+    })
+    .catch(err => console.log(err));
 };
 
-exports.GetProduct = (req, res, next) => {
+exports.GetProduct = async (req, res, next) => {
   const id = req.params.id;
-  Product.findById(id, product => {
-    res.render("shop/product-detail", {
-      product: product,
-      title: `Product: ${product.title}`,
-      path: "/products-detail"
-    });
-  });
+  await Product.findByPk(id)
+    .then(product => {
+      res.render("shop/product-detail", {
+        product: product,
+        title: `Product: ${product.title}`,
+        path: "/products-detail"
+      });
+    })
+    .catch(err => console.log(err));
 };
 
-exports.GetIndex = (req, res, next) => {
-  const products = Product.fetchAll(products => {
-    res.render("shop/index", {
-      products: products,
-      title: "Shop",
-      path: "/"
-    });
-  });
+exports.GetIndex = async (req, res, next) => {
+  await Product
+    .then(products => {
+      res.render("shop/index", {
+        products: products,
+        title: "Shop",
+        path: "/"
+      });
+    })
+    .catch(err => console.log(err));
 };
 
 exports.GetCart = (req, res, next) => {
   const cart = Cart.fetchAll(cart => {
-    const products = Product.fetchAll(products => {
+    const products = Products.fetchAll(products => {
       const cartProducts = products
         .map(cp => ({
           product: cp,
@@ -56,7 +61,7 @@ exports.GetCart = (req, res, next) => {
 
 exports.PostAddToCart = (req, res, next) => {
   const id = req.body.id;
-  Product.findById(id, product => {
+  Products.findById(id, product => {
     Cart.addProduct(id, product.price);
   });
   res.redirect("/shop/products");
@@ -69,7 +74,7 @@ exports.PostDeleteCartItem = (req, res, next) => {
 };
 
 exports.GetOrders = (req, res, next) => {
-  const products = Product.fetchAll(products => {
+  const products = Products.fetchAll(products => {
     res.render("shop/orders", {
       products: products,
       title: "Your Orders",

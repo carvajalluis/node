@@ -10,8 +10,8 @@ block content
                 label(for="title") Title
                 input(type="text" name="title" value=`${editMode ? product.title: ''}`)#title
             .form-control
-                label(for="imgUrl") Image Url
-                input(type="text" name="imgUrl" value=`${editMode ? product.imgUrl: ''}`)#imgUrl
+                label(for="imageUrl") Image Url
+                input(type="text" name="imageUrl" value=`${editMode ? product.imageUrl: ''}`)#imageUrl
             .form-control
                 label(for="price") Price
                 input(type="number" name="price" step="0.01" value=`${editMode ? product.price: ''}`)#price
