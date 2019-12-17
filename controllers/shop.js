@@ -38,10 +38,8 @@ exports.GetIndex = async (req, res, next) => {
 exports.GetCart = (req, res, next) => {
   req.user
     .getCart()
-    .then(cart => {
-      createCart(cart, req);
-      return cart.getProducts();
-    })
+    .then(cart => initializeCart(cart, req))
+    .then(cart => cart.getProducts())
     .then(products =>
       res.render("shop/cart", {
         products: products,
@@ -58,22 +56,23 @@ exports.PostAddToCart = (req, res, next) => {
   let qty;
   req.user
     .getCart()
+    .then(cart => initializeCart(cart, req))
     .then(cart => {
-      createCart(cart, req);
       fetchedCart = cart;
       return cart.getProducts({ where: { id: id } });
     })
     .then(products => {
-      if (!products) {
+      let product;
+      if (products.length) {
+        product = products[0];
+      }
+      if (product) {
+        qty = product.CartItem.quantity + 1;
+        return product;
+      } else {
         qty = 1;
         return Product.findByPk(id);
-      } else {
-        if (products.length) {
-          qty = fetchedCart.CartItem.quantity + 1;
-        }
       }
-
-      return Product.findByPk(id);
     })
     .then(product => {
       return fetchedCart.addProduct(product, {
@@ -92,8 +91,8 @@ exports.PostDeleteCartItem = (req, res, next) => {
   let { id } = req.body;
   req.user
     .getCart()
+    .then(cart => initializeCart(cart, req))
     .then(cart => {
-      createCart(cart, req);
       return cart.getProducts({ where: { id: id } });
     })
     .then(products => products[0].CartItem.destroy())
@@ -113,10 +112,12 @@ exports.GetOrders = (req, res, next) => {
   });
 };
 
-function createCart(cart, req) {
+initializeCart = async (cart, req) => {
   if (!cart) {
-    req.user.createCart();
-    User.findByPk(req.user.id).then(user => ({ ...req.user, ...user }));
-    console.log(`new cart created for ${req.user.userName}`);
+    await req.user.createCart();
+    await req.user.reload();
+    console.log(`New cart created for ${req.user.userName}`);
+    return req.user.getCart();
   }
-}
+  return cart;
+};
