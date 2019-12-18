@@ -1,7 +1,5 @@
 "use strict";
 
-const { Cart } = require("./index");
-
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define("User", {
     userName: {

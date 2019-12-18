@@ -3,15 +3,29 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable("CartItems", {
       quantity: {
-        type: Sequelize.INTEGER
-      },
-      productId: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        allowNull: false
       },
-      cartId: {
+
+      CartId: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        references: {
+          model: "Carts", // name of Target model
+          key: "id" // key in Target model that we're referencing
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
+      },
+      ProductId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        references: {
+          model: "Products", // name of Target model
+          key: "id" // key in Target model that we're referencing
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
       },
       createdAt: {
         allowNull: false,
