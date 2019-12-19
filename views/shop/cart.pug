@@ -16,6 +16,9 @@ block content
                             input(type="hidden" name="id" value=item.id)
                             input(type="hidden" name="price" value=item.price)
                             button.btn.danger(type="submit") Delete
-
+            hr
+            .centered
+                form(action="/shop/order" method="post")
+                    button.btn(type="submit") Order now!
         else
             h1 No items in the cart!

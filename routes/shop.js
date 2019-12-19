@@ -17,6 +17,8 @@ router.post("/delete-cart-item", shopCtrl.PostDeleteCartItem);
 
 router.get("/orders", shopCtrl.GetOrders);
 
+router.post("/order", shopCtrl.PostOrder);
+
 router.get("/checkout");
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { Product, User } = require("../models");
+const { Product, Order } = require("../models");
 
 exports.GetProducts = async (req, res, next) => {
   const products = await Product.findAll()
@@ -103,13 +103,44 @@ exports.PostDeleteCartItem = (req, res, next) => {
 };
 
 exports.GetOrders = (req, res, next) => {
-  const products = Products.fetchAll(products => {
-    res.render("shop/orders", {
-      products: products,
-      title: "Your Orders",
-      path: "/orders"
-    });
-  });
+  req.user
+    .getOrders({ include: ["Products"] })
+    .then(orders => {
+      res.render("shop/orders", {
+        orders: orders,
+        title: "Your Orders",
+        path: "/orders"
+      });
+    })
+    .catch(err => console.log(err));
+};
+
+exports.PostOrder = (req, res, next) => {
+  let cartProducts;
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then(cart => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    })
+    .then(products => {
+      cartProducts = products;
+      return req.user.createOrder();
+    })
+    .then(order => {
+      return order.addProducts(
+        cartProducts.map(product => {
+          product.OrderItem = { quantity: product.CartItem.quantity };
+          return product;
+        })
+      );
+    })
+    .then(() => {
+      fetchedCart.setProducts(null);
+      return res.redirect("/shop/orders");
+    })
+    .catch(err => console.log(err));
 };
 
 initializeCart = async (cart, req) => {

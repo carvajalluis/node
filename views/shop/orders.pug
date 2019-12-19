@@ -1,4 +1,21 @@
 extends ../layouts/main-layout.pug
 
 block content
-    h1 Nothing there yet!
+    if (!orders)
+        h1 Nothing there yet!
+    else
+        ul.cart__item-list
+            each order in orders 
+                li.cart__item
+                    h3 #{order.id}
+                    ul.cart__item-list
+                        each item in order.Products
+                            li.cart__item
+                                img(src=item.imageUrl, alt=item.title style='width:100px;height:100px;')
+                                p #{item.title}. Qty: #{item.OrderItem.quantity}. 
+                                //- Price #{item.price}$
+                                //- p Subtotal: #{item.price * item.quantity}$
+                                //- form(action="/shop/delete-cart-item" method="post")
+                                //-     input(type="hidden" name="id" value=item.id)
+                                //-     input(type="hidden" name="price" value=item.price)
+                                //-     button.btn.danger(type="submit") Delete
