@@ -8,6 +8,7 @@
     "start": "cross-env nodemon app.js",
     "start-server": "node app.js",
     "commit": "npx git-cz",
+    "build": "webpack",
     "release": "cross-env GITLAB_TOKEN=6Qgg7_MSmpr5zwgDZR-6 GITLAB_PREFIX=\"/api/v4\" NPM_TOKEN=bdedbe3a-3545-49d1-a5bc-d441a3d54062 npx semantic-release --dry-run"
   },
   "author": "Luis Carvajal",
@@ -18,7 +19,9 @@
     "cz-conventional-changelog": "3.0.2",
     "faker": "^4.1.0",
     "nodemon": "^1.18.3",
-    "semantic-release": "^15.13.31"
+    "semantic-release": "^15.13.31",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

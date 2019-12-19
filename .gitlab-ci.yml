@@ -1,0 +1,23 @@
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/node/tags/
+image: node:12.14-alpine
+
+before_script:
+  - yarn install
+
+stages:
+  - build
+
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  script:
+    - yarn build
+  artifacts:
+    paths:
+      - dist/
