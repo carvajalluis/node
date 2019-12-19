@@ -1,22 +1,24 @@
 "use strict";
 
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define("User", {
-    userName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: DataTypes.STRING
-  });
-  User.associate = function(models) {
-    User.hasOne(models.Cart);
-    User.hasMany(models.Order);
-  };
-  return User;
-};
+"use strict";
+
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const userSchema = new Schema({
+  userName: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  cart: {
+    items: [
+      {
+        productId: { type: Schema.Types.ObjectId, required: true },
+        quantity: { type: Number, required: true }
+      }
+    ]
+  },
+  createdAt: { type: Date, required: true },
+  updatedAt: { type: Date, required: true }
+});
+
+module.exports = mongoose.model("User", userSchema);

@@ -1,7 +1,7 @@
-var { Product } = require("../models");
+const Product = require("../models/product");
 
 exports.GetProducts = async (req, res, next) => {
-  await Product.findAll()
+  await Product.find()
     .then(products => {
       res.render("admin/products", {
         products: products,
@@ -26,7 +26,7 @@ exports.GetEditProduct = async (req, res, next) => {
   if (!editMode) {
     return res.redirect("/products");
   }
-  await Product.findByPk(id)
+  await Product.findById(id)
     .then(product => {
       if (!product) {
         return res.redirect("/admin/products");
@@ -45,7 +45,16 @@ exports.GetEditProduct = async (req, res, next) => {
 exports.PostAddProduct = async (req, res, next) => {
   let { title, imageUrl, price, description } = req.body;
 
-  await Product.create({ title, imageUrl, price, description })
+  const product = new Product({
+    title: title,
+    description: description,
+    price: price,
+    imageUrl: imageUrl,
+    createdAt: Date(),
+    updatedAt: Date()
+  });
+  product
+    .save()
     .then(() => {
       console.log("Product created!");
       res.redirect("/admin/products");
@@ -56,7 +65,7 @@ exports.PostAddProduct = async (req, res, next) => {
 exports.PostEditProduct = async (req, res, next) => {
   let { id, title, imageUrl, price, description } = req.body;
 
-  await Product.findByPk(id)
+  await Product.findById(id)
     .then(product => {
       product.title = title;
       product.imageUrl = imageUrl;
@@ -76,8 +85,7 @@ exports.PostEditProduct = async (req, res, next) => {
 
 exports.PostDeleteProduct = async (req, res, next) => {
   let { id } = req.body;
-  await Product.findByPk(id)
-    .then(product => product.destroy())
+  await Product.findByIdAndRemove(id)
     .then(() => {
       console.log("Product destroyed!");
       res.redirect("/admin/products");
