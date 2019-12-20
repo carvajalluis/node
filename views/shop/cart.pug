@@ -9,12 +9,13 @@ block content
             ul.cart__item-list
                 each item in products 
                     li.cart__item
-                        img(src=item.imageUrl, alt=item.title style='width:100px;height:100px;')
-                        p #{item.title}. Qty: #{item.CartItem.quantity}. Price #{item.price}$
-                        p Subtotal: #{item.price * item.CartItem.quantity}$
+                        img(src=item.product.imageUrl, alt=item.title style='width:100px;height:100px;')
+                        h5 #{item.product.title}
+                        p Qty: #{item.quantity}. Price #{item.product.price}$
+                        p Subtotal: #{item.product.price * item.quantity}$
                         form(action="/shop/delete-cart-item" method="post")
-                            input(type="hidden" name="id" value=item.id)
-                            input(type="hidden" name="price" value=item.price)
+                            input(type="hidden" name="id" value=item.product.id)
+                            input(type="hidden" name="price" value=item.product.price)
                             button.btn.danger(type="submit") Delete
             hr
             .centered

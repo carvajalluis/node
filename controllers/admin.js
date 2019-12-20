@@ -2,6 +2,8 @@ const Product = require("../models/product");
 
 exports.GetProducts = async (req, res, next) => {
   await Product.find()
+  //   .select("title price -_id")
+  //   .populate("userId", "userName")
     .then(products => {
       res.render("admin/products", {
         products: products,
@@ -50,6 +52,7 @@ exports.PostAddProduct = async (req, res, next) => {
     description: description,
     price: price,
     imageUrl: imageUrl,
+    userId: req.user,
     createdAt: Date(),
     updatedAt: Date()
   });

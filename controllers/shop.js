@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Order = require("../models/order");
 
 exports.GetProducts = async (req, res, next) => {
   await Product.find()
@@ -39,47 +40,22 @@ exports.GetIndex = async (req, res, next) => {
 
 exports.GetCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then(cart => initializeCart(cart, req))
-    .then(cart => cart.getProducts())
-    .then(products =>
+    .populate("cart.items.product")
+    .execPopulate()
+    .then(user => {
       res.render("shop/cart", {
-        products: products,
+        products: user.cart.items,
         title: "Your Cart",
         path: "/cart"
-      })
-    )
+      });
+    })
     .catch(err => console.log(err));
 };
 
 exports.PostAddToCart = (req, res, next) => {
-  const id = req.body.id;
-  let fetchedCart;
-  let qty;
-  req.user
-    .getCart()
-    .then(cart => initializeCart(cart, req))
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts({ where: { id: id } });
-    })
-    .then(products => {
-      let product;
-      if (products.length) {
-        product = products[0];
-      }
-      if (product) {
-        qty = product.CartItem.quantity + 1;
-        return product;
-      } else {
-        qty = 1;
-        return Product.findByPk(id);
-      }
-    })
+  Product.findById(req.body.id)
     .then(product => {
-      return fetchedCart.addProduct(product, {
-        through: { quantity: qty }
-      });
+      req.user.addToCart(product);
     })
     .then(() => {
       return res.redirect("/shop/cart");
@@ -92,12 +68,7 @@ exports.PostAddToCart = (req, res, next) => {
 exports.PostDeleteCartItem = (req, res, next) => {
   let { id } = req.body;
   req.user
-    .getCart()
-    .then(cart => initializeCart(cart, req))
-    .then(cart => {
-      return cart.getProducts({ where: { id: id } });
-    })
-    .then(products => products[0].CartItem.destroy())
+    .removeFromCart(id)
     .then(() => {
       return res.redirect("/shop/cart");
     })
@@ -105,9 +76,9 @@ exports.PostDeleteCartItem = (req, res, next) => {
 };
 
 exports.GetOrders = (req, res, next) => {
-  req.user
-    .getOrders({ include: ["Products"] })
+  Order.find({ "user._id": req.user._id })
     .then(orders => {
+      console.log(orders);
       res.render("shop/orders", {
         orders: orders,
         title: "Your Orders",
@@ -118,39 +89,26 @@ exports.GetOrders = (req, res, next) => {
 };
 
 exports.PostOrder = (req, res, next) => {
-  let cartProducts;
-  let fetchedCart;
   req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then(products => {
-      cartProducts = products;
-      return req.user.createOrder();
-    })
-    .then(order => {
-      return order.addProducts(
-        cartProducts.map(product => {
-          product.OrderItem = { quantity: product.CartItem.quantity };
-          return product;
+    .populate("cart.items.product")
+    .execPopulate()
+    .then(user => {
+      const order = new Order({
+        user: {
+          userId: req.user._id
+        },
+        products: user.cart.items.map(i => {
+          return { quantity: i.quantity, product: { ...i.product._doc } };
         })
-      );
+      });
+      return order.save();
     })
     .then(() => {
-      fetchedCart.setProducts(null);
-      return res.redirect("/shop/orders");
+      return req.user.clearCart();
+    })
+    .then(() => {
+      console.log("Order Created!");
+      res.redirect("/shop/orders");
     })
     .catch(err => console.log(err));
-};
-
-initializeCart = async (cart, req) => {
-  if (!cart) {
-    await req.user.createCart();
-    await req.user.reload();
-    console.log(`New cart created for ${req.user.userName}`);
-    return req.user.getCart();
-  }
-  return cart;
 };
