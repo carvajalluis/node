@@ -7,7 +7,8 @@ exports.GetProducts = async (req, res, next) => {
       res.render("shop/products", {
         products: products,
         title: "Shop",
-        path: "/products"
+        path: "/products",
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));
@@ -20,7 +21,8 @@ exports.GetProduct = async (req, res, next) => {
       res.render("shop/product-detail", {
         product: product,
         title: `Product: ${product.title}`,
-        path: "/products-detail"
+        path: "/products-detail",
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));
@@ -32,7 +34,8 @@ exports.GetIndex = async (req, res, next) => {
       res.render("shop/products", {
         products: products,
         title: "Shop",
-        path: "/products"
+        path: "/products",
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));
@@ -46,7 +49,8 @@ exports.GetCart = (req, res, next) => {
       res.render("shop/cart", {
         products: user.cart.items,
         title: "Your Cart",
-        path: "/cart"
+        path: "/cart",
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));
@@ -55,14 +59,12 @@ exports.GetCart = (req, res, next) => {
 exports.PostAddToCart = (req, res, next) => {
   Product.findById(req.body.id)
     .then(product => {
-      req.user.addToCart(product);
+      return req.user.addToCart(product);
     })
     .then(() => {
       return res.redirect("/shop/cart");
     })
     .catch(err => console.log(err));
-
-  const { userName, userId } = req.user;
 };
 
 exports.PostDeleteCartItem = (req, res, next) => {
@@ -76,13 +78,14 @@ exports.PostDeleteCartItem = (req, res, next) => {
 };
 
 exports.GetOrders = (req, res, next) => {
-  Order.find({ "user._id": req.user._id })
+  Order.find({ "user.userId": req.user._id })
     .then(orders => {
       console.log(orders);
       res.render("shop/orders", {
         orders: orders,
         title: "Your Orders",
-        path: "/orders"
+        path: "/orders",
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));

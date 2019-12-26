@@ -1,20 +1,21 @@
 extends ../layouts/main-layout.pug
 
+block styles 
+    link(rel="stylesheet" href="/css/orders.css")
 block content
     if (!orders)
         h1 Nothing there yet!
     else
-        ul.cart__item-list
+        ul.orders
             each order in orders 
-                li.cart__item
-                    h3 #{order._id}
-                    ul.cart__item-list
+                li.orders__item
+                    h3 Order - # #{order._id}
+                    ul.orders__products
                         each item in order.products
-                            li.cart__item
-                                img(src=item.product.imageUrl, alt=item.product.title style='width:100px;height:100px;')
-                                p #{item.product.title}. Qty: #{item.product.quantity}. 
-                                Price #{item.product.price}$
-                                p Subtotal: #{item.product.price * item.quantity}$
+                            li.orders__products-item
+                                //- img(src=item.product.imageUrl, alt=item.product.title style='width:100px;height:100px;')
+                                p #{item.product.title}(#{item.quantity}) Price #{item.product.price}$
+                                //- p Subtotal: #{item.product.price * item.quantity}$
                                 //- form(action="/shop/delete-cart-item" method="post")
                                 //-     input(type="hidden" name="id" value=item.id)
                                 //-     input(type="hidden" name="price" value=item.price)

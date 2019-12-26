@@ -2,13 +2,12 @@ const Product = require("../models/product");
 
 exports.GetProducts = async (req, res, next) => {
   await Product.find()
-  //   .select("title price -_id")
-  //   .populate("userId", "userName")
     .then(products => {
       res.render("admin/products", {
         products: products,
         title: "Product List",
-        path: "/products"
+        path: "/products",
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));
@@ -18,7 +17,8 @@ exports.GetAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     title: "Add product",
     path: "/add-product",
-    editMode: false
+    editMode: false,
+    isAuthenticated : req.session.user
   });
 };
 
@@ -38,7 +38,8 @@ exports.GetEditProduct = async (req, res, next) => {
         title: `Edit ${product.title}`,
         path: "/edit-product",
         editMode: !!editMode,
-        product: product
+        product: product,
+        isAuthenticated : req.session.user
       });
     })
     .catch(err => console.log(err));
