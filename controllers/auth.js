@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
@@ -32,16 +33,19 @@ exports.postSignup = (req, res, next) => {
       if (user) {
         return res.redirect("auth/login");
       }
-      const newUserName = email.split("@").shift();
-      const newUser = new User({
-        userName: newUserName,
-        email: email,
-        password: password,
-        cart: { items: [] },
-        createdAt: Date(),
-        updatedAt: Date()
+      let salt = bcrypt.genSaltSync(10);
+      return bcrypt.hash(password, salt).then(hashedPassword => {
+        const newUserName = email.split("@").shift();
+        const newUser = new User({
+          userName: newUserName,
+          email: email,
+          password: hashedPassword,
+          cart: { items: [] },
+          createdAt: Date(),
+          updatedAt: Date()
+        });
+        return newUser.save();
       });
-      return newUser.save();
     })
     .then(user => {
       req.session.user = user;
