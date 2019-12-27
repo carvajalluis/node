@@ -25,6 +25,7 @@ header.main-header
             else
                 li.main-header__item
                     form(action="/auth/logout" method="post")
+                        input(type="hidden" name="_csrf" value="csrfToken")
                         button(type="submit") Logout   
 nav.mobile-nav
     ul.mobile-nav__item-list
@@ -46,7 +47,9 @@ nav.mobile-nav
             li.mobile-nav__item
                 a(href="/auth/login") Login
             li.mobile-nav__item
-                    a(class=(path === "signup" ? "active" : "" ) href="/auth/signup") Signup
+                a(class=(path === "signup" ? "active" : "" ) href="/auth/signup") Signup
         else
             li.mobile-nav__item
-                a(href="/auth/logout") Logout   
+                form(action="/auth/logout" method="post")
+                    input(type="hidden" name="_csrf" value="csrfToken")
+                    button(type="submit") Logout   

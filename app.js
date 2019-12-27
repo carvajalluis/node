@@ -5,9 +5,13 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-
+const csrf = require("csurf");
 const errorCtrl = require("./controllers/error");
 const User = require("./models/user");
+
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 
 const MONGODB_URI =
   "mongodb+srv://admin:x8IG7iS4L9aYqtf3@cluster0-yf21k.mongodb.net/shop?retryWrites=true&w=majority";
@@ -32,12 +36,10 @@ store.on("error", err => {
   }
 });
 
+const csrfProtection = csrf();
+
 app.set("view engine", "pug");
 app.set("views", "views");
-
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -49,6 +51,7 @@ app.use(
     store: store
   })
 );
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -62,6 +65,7 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 });
+
 app.use("/admin", adminRoutes);
 app.use("/shop", shopRoutes);
 app.use("/auth", authRoutes);

@@ -18,10 +18,26 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  User.findOne({ userName: "carvajalluis" })
+  const { user, password } = req.body;
+  User.findOne({ $or: [{ email: user }, { userName: user }] })
     .then(user => {
-      req.session.user = user;
-      req.session.save(() => res.redirect("/shop"));
+      if (!user) {
+        return res.redirect("/auth/login");
+      }
+      bcrypt
+        .compare(password, user.password)
+        .then(match => {
+          if (match) {
+            req.session.user = user;
+            return req.session.save(() => res.redirect("/shop"));
+          }
+
+          res.redirect("/auth/login");
+        })
+        .catch(err => {
+          console.log(err);
+          res.redirect("/auth/login");
+        });
     })
     .catch(err => console.log(err));
 };
