@@ -1,4 +1,5 @@
 if(isAuthenticated)
-    form(action="/shop/add-to-cart", method="post")
+    form(action="/shop/add-to-cart" method="post")
         button.btn(type="submit") Add to Cart
-        input(type="hidden", name="id" value=product.id)
+        input(type="hidden" name="id" value=product.id)
+        input(type="hidden" name="_csrf" value=csrfToken) 

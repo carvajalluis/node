@@ -16,10 +16,12 @@ block content
                         form(action="/shop/delete-cart-item" method="post")
                             input(type="hidden" name="id" value=item.product.id)
                             input(type="hidden" name="price" value=item.product.price)
+                            input(type="hidden" name="_csrf" value=csrfToken) 
                             button.btn.danger(type="submit") Delete
             hr
             .centered
                 form(action="/shop/order" method="post")
+                    input(type="hidden" name="_csrf" value=csrfToken) 
                     button.btn(type="submit") Order now!
         else
             h1 No items in the cart!

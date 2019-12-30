@@ -5,6 +5,8 @@ block styles
     link(rel="stylesheet" href="/css/forms.css")
 block content
     main
+        if(errorMessage)
+            div(class=errorMessage.length ? "user-message user-message--error": "") #{errorMessage}
         form.login-form(action="/auth/signup" method="POST")
             .form-control
                 label(for="email") E-Mail
@@ -15,4 +17,5 @@ block content
             .form-control
                 label(for="confirmPassword") Confirm Password
                 input( type="password" name="confirmPassword" )#confirmPassword
+            input(type="hidden" name="_csrf" value=csrfToken) 
             button.btn(type="submit") Signup

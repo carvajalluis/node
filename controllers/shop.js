@@ -7,8 +7,7 @@ exports.GetProducts = async (req, res, next) => {
       res.render("shop/products", {
         products: products,
         title: "Shop",
-        path: "/products",
-        isAuthenticated : req.session.user
+        path: "/products"
       });
     })
     .catch(err => console.log(err));
@@ -21,8 +20,7 @@ exports.GetProduct = async (req, res, next) => {
       res.render("shop/product-detail", {
         product: product,
         title: `Product: ${product.title}`,
-        path: "/products-detail",
-        isAuthenticated : req.session.user
+        path: "/products-detail"
       });
     })
     .catch(err => console.log(err));
@@ -34,8 +32,7 @@ exports.GetIndex = async (req, res, next) => {
       res.render("shop/products", {
         products: products,
         title: "Shop",
-        path: "/products",
-        isAuthenticated : req.session.user
+        path: "/products"
       });
     })
     .catch(err => console.log(err));
@@ -49,8 +46,7 @@ exports.GetCart = (req, res, next) => {
       res.render("shop/cart", {
         products: user.cart.items,
         title: "Your Cart",
-        path: "/cart",
-        isAuthenticated : req.session.user
+        path: "/cart"
       });
     })
     .catch(err => console.log(err));
@@ -84,8 +80,7 @@ exports.GetOrders = (req, res, next) => {
       res.render("shop/orders", {
         orders: orders,
         title: "Your Orders",
-        path: "/orders",
-        isAuthenticated : req.session.user
+        path: "/orders"
       });
     })
     .catch(err => console.log(err));
