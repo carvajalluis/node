@@ -1,5 +1,16 @@
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const sendGridTransport = require("nodemailer-sendgrid-transport");
 const User = require("../models/user");
+
+const transport = nodemailer.createTransport(
+  sendGridTransport({
+    auth: {
+      api_key:
+        "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"
+    }
+  })
+);
 
 exports.getLogin = (req, res, next) => {
   res.render("auth/login", {
@@ -70,6 +81,12 @@ exports.postSignup = (req, res, next) => {
       if (user) {
         req.session.user = user;
         req.session.save(() => res.redirect("/shop"));
+        return transport.sendMail({
+          to: user.email,
+          from: "shop@specbite.com",
+          subject: "thank you for signing up!",
+          html: "<h1>You succesfully signed up</h1>"
+        });
       }
     })
     .catch(err => console.log(err));
