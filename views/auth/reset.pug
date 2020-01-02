@@ -7,14 +7,9 @@ block content
     main
         if(errorMessage)
             div(class=errorMessage.length ? "user-message user-message--error": "") #{errorMessage}
-        form.login-form(action="/auth/login" method="POST")
+        form.login-form(action="/auth/reset" method="POST")
             .form-control
                 label(for="user") User / E-mail
-                input(type="text" name="user")#user
-            .form-control
-                label(for="password") Password
-                input(type="password" name="password" )#password      
+                input(type="text" name="user")#user   
             input(type="hidden" name="_csrf" value=csrfToken) 
-            button.btn(type="submit") Login
-        .centered
-            a(href="/auth/reset") Reset password
+            button.btn(type="submit") Reset Password

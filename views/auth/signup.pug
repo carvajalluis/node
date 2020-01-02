@@ -7,7 +7,7 @@ block content
     main
         if(errorMessage)
             div(class=errorMessage.length ? "user-message user-message--error": "") #{errorMessage}
-        form.login-form(action="/auth/signup" method="POST")
+        form.login-form(action="/auth/signup" method="POST" novalidate)
             .form-control
                 label(for="email") E-Mail
                 input(type="email" name="email")#email
