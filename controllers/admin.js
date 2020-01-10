@@ -7,10 +7,14 @@ exports.GetProducts = async (req, res, next) => {
         products: products,
         title: "Product List",
         path: "/products",
-        isAuthenticated : req.session.user
+        isAuthenticated: req.session.user
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.GetAddProduct = (req, res, next) => {
@@ -18,7 +22,7 @@ exports.GetAddProduct = (req, res, next) => {
     title: "Add product",
     path: "/add-product",
     editMode: false,
-    isAuthenticated : req.session.user
+    isAuthenticated: req.session.user
   });
 };
 
@@ -39,10 +43,14 @@ exports.GetEditProduct = async (req, res, next) => {
         path: "/edit-product",
         editMode: !!editMode,
         product: product,
-        isAuthenticated : req.session.user
+        isAuthenticated: req.session.user
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.PostAddProduct = async (req, res, next) => {
@@ -63,7 +71,11 @@ exports.PostAddProduct = async (req, res, next) => {
       console.log("Product created!");
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.PostEditProduct = async (req, res, next) => {
