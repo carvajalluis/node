@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1](https://gitlab.com/carvajalluis/node-udemy/compare/v0.0.0...v0.0.1) (2020-06-11)
+
+
+### Features
+
+* **posts:** graphql posts submmit ([a6b4259](https://gitlab.com/carvajalluis/node-udemy/commit/a6b42593e502d79c346d5b47d60cd16bfdff9ac9))
+
 ## 0.0.0 (2020-06-11)
 
 
