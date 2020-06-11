@@ -10,6 +10,8 @@ const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
 
 const auth = require("./middleware/auth");
+const expressPlayground = require("graphql-playground-middleware-express")
+  .default;
 
 const app = express();
 
@@ -60,7 +62,6 @@ app.use(
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
-    graphiql: true,
     customFormatErrorFn(error) {
       if (!error.originalError) {
         return error;
@@ -70,6 +71,14 @@ app.use(
       const code = error.originalError.code || 500;
       return { message: message, status: code, data: data };
     },
+  })
+);
+
+app.get(
+  "/playground",
+  expressPlayground({
+    endpoint: "/graphql",
+    useGraphQLConfig: true
   })
 );
 
@@ -90,3 +99,7 @@ mongoose
     app.listen(8080);
   })
   .catch((err) => console.log(err));
+
+console.log(
+  `Serving the GraphQL Playground on http://localhost:8080/playground`
+);
