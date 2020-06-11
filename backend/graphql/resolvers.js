@@ -115,9 +115,14 @@ module.exports = {
       title: title,
       content: content,
       imageUrl: imageUrl,
+      creator: user,
     });
 
     const storedPost = await post.save();
+
+    user.posts.push(storedPost);
+    user.save();
+    
     return {
       ...storedPost._doc,
       _id: storedPost._id.toString(),
