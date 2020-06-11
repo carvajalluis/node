@@ -1,6 +1,6 @@
 {
   "name": "nodejs-complete-guide",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Complete Node.js Guide",
   "main": "app.js",
   "scripts": {
@@ -9,17 +9,17 @@
     "start-server": "node app.js",
     "commit": "npx git-cz",
     "build": "webpack",
-    "release": "cross-env GITLAB_TOKEN=6Qgg7_MSmpr5zwgDZR-6 GITLAB_PREFIX=\"/api/v4\" NPM_TOKEN=bdedbe3a-3545-49d1-a5bc-d441a3d54062 npx semantic-release --dry-run"
+    "release": "standard-version"
   },
   "author": "Luis Carvajal",
   "license": "ISC",
   "devDependencies": {
-    "@semantic-release/gitlab-config": "8.0.0",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "3.2.0",
     "faker": "^4.1.0",
     "nodemon": "^1.18.3",
-    "semantic-release": "^17.0.8"
+    "semantic-release": "^17.0.8",
+    "standard-version": "^8.0.0"
   },
   "dependencies": {
     "@sendgrid/client": "^7.1.1",
@@ -43,7 +43,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "path": "./backend/node_modules/cz-conventional-changelog"
     }
   },
   "release": {

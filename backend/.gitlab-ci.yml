@@ -8,6 +8,27 @@ before_script:
 stages:
   - build
 
+.default-rule: &default-rule
+  if: '$CI_MERGE_REQUEST_IID || $CI_COMMIT_REF_SLUG == "master"'
+
+.be-package:
+  variables:
+    PACKAGE: "backend"
+  before_script:
+    - cd backend
+  only:
+    changes:
+      - "backend/**/*"
+
+.fe-package:
+  variables:
+    PACKAGE: "frontend"
+  before_script:
+    - cd frontend
+  only:
+    changes:
+      - "frontend/**/*"
+
 # This folder is cached between builds
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
@@ -21,3 +42,22 @@ build:
   artifacts:
     paths:
       - dist/
+
+.build-package:
+  stage: build
+  script:
+    - echo "Building $PACKAGE"
+    - yarn build
+  rules:
+    - <<: *default-rule
+
+build-be-package:
+  extends:
+    - .build-package
+    - .be-package
+
+build-fe-package:
+  extends:
+    - .build-package
+    - .fe-package
+
