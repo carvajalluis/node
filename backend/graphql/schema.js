@@ -42,8 +42,14 @@ module.exports = buildSchema(`
         imageUrl: String!
     }
 
+    type Feed{
+        posts: [Post!]!
+        totalPosts: Int!
+    }
+
     type RootQuery {
         login(userInput:UserLoginInput): AuthData!
+        posts(page:Int!): Feed!
     }
 
     type RootMutation {

@@ -24,7 +24,7 @@ class Feed extends Component {
   componentDidMount() {
     fetch("http://localhost:8080/auth/status", {
       headers: {
-        Authorization: `Bearer  ${this.props.token}`,
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -54,26 +54,48 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch("http://localhost:8080/feed/posts?page=" + page, {
+
+    const graphqlQuery = {
+      query: `{
+        posts (page:${page}){
+          posts{
+            _id
+            title
+            content
+            imageUrl
+            creator{
+              name
+            }
+            createdAt
+          }
+          totalPosts
+        }
+      }`,
+    };
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
       headers: {
-        Authorization: `Bearer  ${this.props.token}`,
+        Authorization: `Bearer ${this.props.token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to fetch posts.");
-        }
         return res.json();
       })
       .then((resData) => {
+        if (resData.errors) {
+          throw new Error("Failed to fetch posts.");
+        }
+        const { posts, total } = resData.data.posts;
         this.setState({
-          posts: resData.posts.map((post) => {
+          posts: posts.map((post) => {
             return {
               ...post,
               imagePath: post.imageUrl,
             };
           }),
-          totalPosts: resData.totalItems,
+          totalPosts: total,
           postsLoading: false,
         });
       })
@@ -85,7 +107,7 @@ class Feed extends Component {
     fetch("http://localhost:8080/auth/status", {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer  ${this.props.token}`,
+        Authorization: `Bearer ${this.props.token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -132,10 +154,15 @@ class Feed extends Component {
     const graphqlQuery = {
       query: `
       mutation {
-        createPost(postInput:{ 
-        title:"${title}",
-        content: "${content}",
-        "imageUrl: "https://via.placeholder.com/150"}){
+        createPost(
+          postInput: {
+            title: "${title}",
+            content: """
+            ${content}
+            """,
+            imageUrl: "https://via.placeholder.com/150"
+          }
+        ) {
           _id
           title
           content
@@ -152,7 +179,7 @@ class Feed extends Component {
       method: "POST",
       body: JSON.stringify(graphqlQuery),
       headers: {
-        Authorization: `Bearer  ${this.props.token}`,
+        Authorization: `Bearer ${this.props.token}`,
         "Content-Type": "application/json",
       },
     })
@@ -163,15 +190,26 @@ class Feed extends Component {
         if (resData.errors && resData.errors[0].status === 422) {
           console.log("Error!");
           throw new Error(
-            "Validation failed. make sure the email address isn't used yet!"
+            "Validation failed. make sure the title and content has dthe proper lenght!"
           );
         }
         if (resData.Errors) {
-          throw new Error("User login failed");
+          throw new Error(resData.Errors.toString());
         }
+        const post = resData.data.createPost;
 
-        console.log(resData);
         this.setState((prevState) => {
+          let updatedPosts = [...prevState.posts];
+
+          if (prevState.editPost) {
+            const postIndex = prevState.post.findIndex(
+              (p) => p._id === prevState.editPost.Id
+            );
+            updatedPosts[postIndex] = post;
+          } else {
+            updatedPosts.unshift(post);
+          }
+
           return {
             isEditing: false,
             editPost: null,
@@ -199,7 +237,7 @@ class Feed extends Component {
     fetch("http://localhost:8080/feed/post/" + postId, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer  ${this.props.token}`,
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {

@@ -121,13 +121,51 @@ module.exports = {
     const storedPost = await post.save();
 
     user.posts.push(storedPost);
-    user.save();
-    
+    await user.save();
+
     return {
       ...storedPost._doc,
       _id: storedPost._id.toString(),
       createdAt: storedPost.createdAt.toISOString(),
       updatedAt: storedPost.updatedAt.toISOString(),
+    };
+  },
+
+  posts: async function ({ page }, req) {
+    if (!req.isAuth) {
+      const error = new Error("Not Authenticated");
+      error.code = 401;
+      throw error;
+    }
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      const error = new Error("Not Authenticated");
+      error.code = 401;
+      throw error;
+    }
+
+    if (!page) {
+      page = 1;
+    }
+    const perPage = 2;
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .populate("creator");
+    const totalPosts = await Post.find().countDocuments();
+
+    return {
+      posts: posts.map((p) => {
+        return {
+          ...p._doc,
+          _id: p._id.toString(),
+          createdAt: p.createdAt.toISOString(),
+          updatedAt: p.updatedAt.toISOString(),
+        };
+      }),
+      totalPosts: totalPosts,
     };
   },
 };
