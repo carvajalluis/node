@@ -148,7 +148,7 @@ module.exports = {
     if (!page) {
       page = 1;
     }
-    const perPage = 2;
+    const perPage = 4;
     const posts = await Post.find()
       .sort({ createdAt: -1 })
       .skip((page - 1) * perPage)

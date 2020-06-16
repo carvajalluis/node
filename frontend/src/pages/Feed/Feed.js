@@ -57,8 +57,8 @@ class Feed extends Component {
 
     const graphqlQuery = {
       query: `{
-        posts (page:${page}){
-          posts{
+        posts (page: ${page}) {
+          posts {
             _id
             title
             content
@@ -87,7 +87,7 @@ class Feed extends Component {
         if (resData.errors) {
           throw new Error("Failed to fetch posts.");
         }
-        const { posts, total } = resData.data.posts;
+        const { posts, totalPosts } = resData.data.posts;
         this.setState({
           posts: posts.map((post) => {
             return {
@@ -95,7 +95,7 @@ class Feed extends Component {
               imagePath: post.imageUrl,
             };
           }),
-          totalPosts: total,
+          totalPosts: totalPosts,
           postsLoading: false,
         });
       })
@@ -207,6 +207,7 @@ class Feed extends Component {
             );
             updatedPosts[postIndex] = post;
           } else {
+            updatedPosts.pop();
             updatedPosts.unshift(post);
           }
 
