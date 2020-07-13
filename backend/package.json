@@ -19,7 +19,7 @@
     "faker": "^4.1.0",
     "nodemon": "^1.18.3",
     "semantic-release": "^17.0.8",
-    "standard-version": "^8.0.0"
+    "standard-version": "^8.0.1"
   },
   "dependencies": {
     "@sendgrid/client": "^7.1.1",
